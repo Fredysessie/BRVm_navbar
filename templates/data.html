@@ -1,0 +1,352 @@
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/mainpage.css') }}">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+<script type=text/javascript>
+  
+  // Helper function to format the date as "YYYY-MM-DD"
+  function formatDate(date) {
+    var year = date.getFullYear();
+    var month = String(date.getMonth() + 1).padStart(2, '0');
+    var day = String(date.getDate()).padStart(2, '0');
+    return year + '-' + month + '-' + day;
+  }
+
+  $(function() {
+    // Obtenir la date d'aujourd'hui
+    var today = new Date();
+
+    // Soustraire 3 mois à la date d'aujourd'hui
+    var startDate = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate());
+
+    // Formater la date de début
+    var formattedStartDate = formatDate(startDate);
+    $('#dateDeb').val(formattedStartDate);
+
+    // Formater la date de fin (aujourd'hui)
+    var formattedEndDate = formatDate(today);
+    $('#dateEnd').val(formattedEndDate);
+
+    // Restaurer les valeurs sélectionnées lors du chargement de la page
+    var storedTicker = localStorage.getItem('selectedTicker');
+    var storedDateDeb = localStorage.getItem('selectedDateDeb');
+    var storedDateEnd = localStorage.getItem('selectedDateEnd');
+    var storedXPeriod = localStorage.getItem('selectedXPeriod');
+
+    if (storedTicker) {
+        $('#Ticker').val(storedTicker);
+    }
+    if (storedDateDeb) {
+        $('#dateDeb').val(storedDateDeb);
+    }
+    if (storedDateEnd) {
+        $('#dateEnd').val(storedDateEnd);
+    }
+    if (storedXPeriod) {
+        $('#xperiod').val(storedXPeriod);
+    }
+
+    // Vérifier la valeur initiale de xperiod pour afficher ou masquer les dates de début et de fin
+    var initialXPeriod = parseInt($('#xperiod').val());
+    if (initialXPeriod > 7) {
+      $("#dateDeb, #dateEnd, #labeldateDeb, #labeldateEnd").hide();
+    } else {
+      $("#dateDeb, #dateEnd, #labeldateDeb, #labeldateEnd").show();
+    }
+
+    $('#xperiod').on('change', function() {
+      let selectedValue = parseInt($(this).val());
+      if (selectedValue > 7) {
+        $("#dateDeb, #dateEnd, #labeldateDeb, #labeldateEnd").hide();;
+        
+        
+      } else {
+        $("#dateDeb, #dateEnd, #labeldateDeb, #labeldateEnd").show();
+      
+      }
+    });
+
+    $('form').on('submit', function() {
+      var selectedTicker = $('#Ticker').val();
+      var selectedDateDeb = $('#dateDeb').val();
+      var selectedDateEnd = $('#dateEnd').val();
+      var selectedXPeriod = $('#xperiod').val();
+      
+      // Stocker les valeurs dans le stockage local du navigateur
+      localStorage.setItem('selectedTicker', selectedTicker);
+      localStorage.setItem('selectedDateDeb', selectedDateDeb);
+      localStorage.setItem('selectedDateEnd', selectedDateEnd);
+      localStorage.setItem('selectedXPeriod', selectedXPeriod);      
+
+    });
+
+     $(document).ready(function() {
+            var currentDate = $.datepicker.formatDate('dd/mm/yy', new Date());
+
+            $("#datedeb, #dateend").datepicker({
+                dateFormat: 'dd/mm/yy',
+                minDate: currentDate,
+                beforeShowDay: function(date) {
+                    var day = date.getDay();
+                    return [(day !== 0 && day !== 6)]; // disable weekends
+                },
+                firstDay: 1 // set start day of week to Monday
+            });
+
+            // Set French localization
+            $.datepicker.setDefaults($.datepicker.regional['fr']);
+        });    
+
+  });    
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            flatpickr("#datedeb, #dateend", {
+                enableTime: false,
+                dateFormat: "Y-m-d",
+                disable: [
+                    function(date) {
+                        return date.getDay() === 0 || date.getDay() === 6; // disable weekends
+                    }
+                ],
+                locale: {
+                    firstDayOfWeek: 1 // set start day of week to Monday
+                }
+            });
+        });
+    </script>
+
+<!--<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function() {
+      const datedebPicker = document.getElementById('#datedeb');
+      const dateendPicker = document.getElementById('#dateend');
+
+      datedebPicker.addEventListener('input', function(e) {
+          var day = new Date(this.value).getUTCDay();
+          if ([6, 0].includes(day)) {  // Samedi (6) et Dimanche (0)
+              e.preventDefault();
+              this.value = '';
+              alert('Les weekends ne sont pas autorisés');
+          }
+      });
+
+      dateendPicker.addEventListener('input', function(e) {
+          var day = new Date(this.value).getUTCDay();
+          if ([6, 0].includes(day)) {  // Samedi (6) et Dimanche (0)
+              e.preventDefault();
+              this.value = '';
+              alert('Les weekends ne sont pas autorisés');
+          }
+      });
+  });
+</script>-->
+
+<script>
+  $(document).ready(function() {
+    $('#myTable').DataTable({
+      "paging": true,
+      "ordering": true,
+      "info": true,
+      "searching": true,
+      "lengthMenu": [10, 25, 50, 75, 100],
+      "pageLength": 30,
+      "language": {
+        "lengthMenu": "Afficher _MENU_ entrées par page",
+        "zeroRecords": "Aucun résultat trouvé",
+        "info": "Page _PAGE_ sur _PAGES_",
+        "infoEmpty": "Aucune donnée disponible",
+        "infoFiltered": "(filtré de _MAX_ entrées totales)",
+        "search": "Rechercher :",
+        "paginate": {
+          "first": "Premier",
+          "last": "Dernier",
+          "next": "Suivant",
+          "previous": "Précédent"
+        }
+      }
+    });
+  });
+</script>
+
+
+{% block title %}Heyyy Espoir, it's working for instance{% endblock %}
+</br></br>
+
+{% block content %}
+<form  method="POST">
+    <div>
+     <label for="Ticker">Choisir :</label>
+     <select name="ticker" id="Ticker"  class="target">
+        <option value="SIVC.ci">AIR LIQUIDE CI</option>
+        <option value="BOAB.bj">BANK OF AFRICA BENIN</option>
+        <option value="BOABF.bf">BANK OF AFRICA BURKINA FASO</option>
+        <option value="BOAC.ci">BANK OF AFRICA CI</option>
+        <option value="BOAM.ml">BANK OF AFRICA MALI</option>
+        <option value="BOAN.ne">BANK OF AFRICA NIGER</option>
+        <option value="BOAS.sn">BANK OF AFRICA SENEGAL</option>
+        <option value="BNBC.ci">BERNABE</option>
+        <option value="BICC.ci">BICICI</option>
+        <option value="SDSC.ci">BOLLORE AFRICA LOGISTICS CI</option>
+        <option value="BRVMAG">BRVM - AGRICULTURE</option>
+        <option value="BRVMAS">BRVM - AUTRES SECTEURS</option>
+        <option value="BRVMDI">BRVM - DISTRIBUTION</option>
+        <option value="BRVMFI">BRVM - FINANCE</option>
+        <option value="BRVMIN">BRVM - INDUSTRIE</option>
+        <option value="BRVMSP">BRVM - SERVICES PUBLICS</option>
+        <option value="BRVMTR">BRVM - TRANSPORT</option>
+        <option value="BRVM10">BRVM 10</option>
+        <option value="BRVMC">BRVM COMPOSITE</option>
+        <option value="CAPIBRVM">Capitalisation BRVM</option>
+        <option value="CFAC.ci">CFAO CI</option>
+        <option value="CIEC.ci">CIE CI</option>
+        <option value="CBIBF.bf">CORIS BANK INTERNATIONAL BF</option>
+        <option value="SEMC.ci">CROWN SIEM</option>
+        <option value="ECOC.ci">ECOBANK CI</option>
+        <option value="ETIT.tg">ETI TG</option>
+        <option value="FTSC.ci">FILTISAC CI</option>
+        <option value="SVOC.ci">MOVIS CI</option>
+        <option value="NEIC.ci">NEI CEDA CI</option>
+        <option value="NTLC.ci">NESTLE CI</option>
+        <option value="NSBC.ci">NSIA BANQUE</option>
+        <option value="ONTBF.bf">ONATEL BF</option>
+        <option value="ORGT.tg">ORAGROUP TOGO</option>
+        <option value="PALC.ci">PALMCI</option>
+        <option value="SAFC.ci">SAFCA CI</option>
+        <option value="SPHC.ci">SAPH CI</option>
+        <option value="ABJC.ci">SERVAIR ABIDJAN CI</option>
+        <option value="STAC.ci">SETAO CI</option>
+        <option value="SGBC.ci">SGBCI</option>
+        <option value="CABC.ci">SICABLE CI</option>
+        <option value="SICC.ci">SICOR</option>
+        <option value="STBC.ci">SITAB</option>
+        <option value="SMBC.ci">SMB CI</option>
+        <option value="SIBC.ci">SOCIETE IVOIRIENNE DE BANQUE CI</option>
+        <option value="SDCC.ci">SODECI</option>
+        <option value="SOGC.ci">SOGB</option>
+        <option value="SLBC.ci">SOLIBRA CI</option>
+        <option value="SNTS.sn">SONATEL</option>
+        <option value="SCRC.ci">SUCRIVOIRE</option>
+        <option value="TTLC.ci">TOTAL CI</option>
+        <option value="TTLS.sn">TOTAL SENEGAL</option>
+        <option value="PRSC.ci">TRACTAFRIC MOTORS CI</option>
+        <option value="TTRC.ci">TRITURAF</option>
+        <option value="UNLC.ci">UNILEVER CI</option>
+        <option value="UNXC.ci">UNIWAX CI</option>
+        <option value="SHEC.ci">VIVO ENERGY CI</option>
+     </select>
+
+     <label for="dateDeb" id="labeldateDeb"> Du :</label>
+     <input type="date" id="dateDeb" name="datedeb" class="target"  >
+
+     <label for="dateEnd" id="labeldateEnd"> Au :</label>
+     <input type="date" name="dateend" id="dateEnd" class="target" >
+
+     <label for="Period"> Période :</label>
+     <select name="xperiod" id="xperiod"  class="target">
+        <option value="0">Journalière</option>
+        <option value="7">Hebdomadaire</option>
+        <option value="30">Mensuelle</option>
+        <option value="91">Trimestrielle</option>
+        <option value="365">Annuelle</option>
+     </select>
+
+     <input type="submit" value="Refresh Data">
+ </div> 
+ </form>
+
+ <!-- <code>{% if data %} {{data}} {% endif %}</code>  -->
+ <table class="styled-table datatable" id="myTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Open</th>
+        <th>High</th>
+        <th>Low</th>
+        <th>Close</th>
+        <th>Volume</th>
+        <th>Variation</th> <!-- Nouvelle colonne -->
+      </tr>
+    </thead>
+    <tbody>
+      {% if data %}
+        {% set previousData = None %}
+        {% for currentData in data %}
+          <tr>
+            <td>{{ currentData.Date }}</td>
+            <td>{{ currentData.Open }}</td>
+            <td>{{ currentData.High }}</td>
+            <td>{{ currentData.Low }}</td>
+            <td>{{ currentData.Close }}</td>
+            <td>{{ currentData.Volume }}</td>
+            {% if currentData.Variation is defined %}
+              {% if currentData.Variation != '' %}
+                <td class="variation-value {% if currentData.Variation|float < 0.0 %}negative{% elif currentData.Variation|float > 0.0 %}positive{% else %}zero{% endif %}">
+                  {% if currentData.Variation|float == 0 %}
+                    <span class="variation-value">0</span>
+                  {% else %}
+                    <span class="variation-value">{{ currentData.Variation }}</span>
+                  {% endif %}
+                </td>
+              {% else %}
+                <td class="variation-value"></td>
+              {% endif %}
+            {% else %}
+              <td class="variation-value zero"></td>
+            {% endif %}
+          </tr>
+          {% set previousData = currentData %}
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="7" class="no-data-message">{{ message }}</td>
+        </tr>
+      {% endif %}
+    </tbody>
+    
+  </table>
+ {% endblock %}
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.2/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.2/css/jquery.dataTables.min.css">
+
+<script type="text/javascript">
+  function sortTable() {
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("datatable");
+    switching = true;
+  
+    while (switching) {
+      switching = false;
+      rows = table.getElementsByTagName("tr");
+  
+      for (i = 1; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        x = rows[i].getElementsByTagName("td")[0]; // Colonne "Date"
+        y = rows[i + 1].getElementsByTagName("td")[0]; // Colonne "Date"
+  
+        if (Date.parse(x.innerHTML) > Date.parse(y.innerHTML)) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+  
+      if (shouldSwitch) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+      }
+    }
+  }
+  
+  window.onload = sortTable;
+  
+</script>
+

@@ -1,0 +1,96 @@
+.styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}
+
+.target {
+    background-color: transparent;
+    padding: 3px;
+    width: 130px;
+    text-align: center;
+    margin: 0 20px 0 5px;
+}
+
+#datedeb, #dateend {
+    
+    border-width: 1px;
+    outline: none;
+}
+
+.no-data-message {
+    text-align: center;
+    color: red; 
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 18px;
+  }
+
+.negative .variation-value {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .positive .variation-value {
+    color: green;
+    font-weight: bold;
+  }
+  
+  .zero {
+    color: black;
+    font-weight: bold;
+  }
+
+  #myTable {
+    width: 65%;
+  }
+  
+  #myTable th,
+  #myTable td {
+    text-align: center;
+    padding: 5px;
+    height: 35px
+  }
+  
+  #myTable th:first-child,
+  #myTable td:first-child {
+    text-align: left;
+  }
+  
+  #myTable th:nth-child(7),
+  #myTable td:nth-child(7) {
+    width: 120px; /* Ajustez la largeur selon vos besoins */
+  }
+  
+  /* Réduire la taille des autres colonnes si nécessaire */
+  
